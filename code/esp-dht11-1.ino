@@ -29,7 +29,7 @@ void loop() {
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
   float h = dht.readHumidity();
   // Read temperature as Celsius (the default)
-  pt =t;
+  pt =t; // save previouse temperature 
   t = dht.readTemperature();
 
   // Check if any reads failed and exit early (to try again).
@@ -37,8 +37,18 @@ void loop() {
     Serial.println(F("Failed to read from DHT sensor!"));
     return; //restart
   }
-  
-   Serial.println("readTemperature in C = "+String(t));
-   Serial.println("readHumidity in % = "+String(t));
+   //Serial.println("readTemperature in C = "+String(t));
+   //Serial.println("readHumidity in % = "+String(h));
 
+   // exerise #1 - display temperature in the plotter 
+    Serial.println(t);
+
+   // exerise #2 ... print temerature only if previouse temperature has changes
+   //
+   //
+  // if(pt != t ) // Check if temperature changed
+  //{
+  //   Serial.println("Same temp");
+  //  ...
+   
 }
