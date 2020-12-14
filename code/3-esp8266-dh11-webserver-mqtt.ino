@@ -51,23 +51,22 @@ String header;
 // Auxiliar variables to store the current output state
 String LEDState = "off";
 
-
 // Assign output variables to GPIO pins
 const int LED = 16;
-
 
 // Current time
 unsigned long currentTime1 = millis();
 // Previous time
 unsigned long previousTime1 = millis(); 
-// Define timeout time in milliseconds (example: 2000ms = 2s)
-const long timeoutTime1 = 2000;
+
+const long mqttSchedule = 10000; // send mqtt message every 10sec
 
 unsigned long currentTime = millis();
 // Previous time
 unsigned long previousTime = 0; 
 // Define timeout time in milliseconds (example: 2000ms = 2s)
 const long timeoutTime = 2000;
+
 WiFiClient espClient;
 PubSubClient mqttclient(espClient);
 
@@ -167,12 +166,14 @@ void loop(){
     currentTime1 = millis();
     //previousTime1 = currentTime1;
     
-  if((currentTime1 - previousTime1) > 5000 ) // send all 5sec
+  if((currentTime1 - previousTime1) > mqttSchedule ) // send all 5sec
   {
 
         float h = dht.readHumidity();
       // Read temperature as Celsius (the default)
       float t = dht.readTemperature();
+
+      // Excerise ... only send message if temperature or Humidity is changing
   
       if (!mqttclient.connected()) {
         reconnect();
@@ -237,13 +238,7 @@ void loop(){
             client.println("<!DOCTYPE html><html>");
             client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             client.println("<link rel=\"icon\" href=\"data:,\">");
-            // CSS to style the on/off buttons 
-            // Feel free to change the background-color and font-size attributes to fit your preferences
-            client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}");
-            client.println(".button { background-color: #195B6A; border: none; color: white; padding: 16px 40px;");
-            client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
-            client.println(".button2 {background-color: #77878A;}");
-            
+    
             String  ptr ="";
             ptr +="<style>html { font-family: 'Open Sans', sans-serif; display: block; margin: 0px auto; text-align: center;color: #333333;}\n";
   ptr +="body{margin-top: 50px;}\n";
@@ -257,6 +252,9 @@ void loop(){
   ptr +=".temperature{font-weight: 300;font-size: 60px;color: #f39c12;}\n";
   ptr +=".superscript{font-size: 17px;font-weight: 600;position: absolute;right: -20px;top: 15px;}\n";
   ptr +=".data{padding: 10px;}\n";
+  ptr +=".button { background-color: #195B6A; border: none; color: white; padding: 16px 40px;\n";
+  ptr +="text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}\n";
+  ptr +=".button2 {background-color: #77878A;}\n";
   ptr +="</style></head>\n";
   client.println(ptr);
   
@@ -278,7 +276,6 @@ void loop(){
             client.println("<div class=\"side-by-side temperature-text\">Temperature</div><div class=\"side-by-side temperature\">"+(String)t+" C</div><br>");
             client.println("<div class=\"side-by-side humidity-text\">Humidity</div><div class=\"side-by-side humidity\">"+(String)h+" %</div>\n");
 
-            
             client.println("<p><a href=\"/refresh\"><button class=\"button button2\">Refresh</button></a></p>");
             client.println("</body></html>");
             
@@ -297,7 +294,7 @@ void loop(){
     // Clear the header variable
     header = "";
     // Close the connection
-    client.stop();
+    client.stop();    
     Serial.println("Client disconnected.");
     Serial.println("");
   }
