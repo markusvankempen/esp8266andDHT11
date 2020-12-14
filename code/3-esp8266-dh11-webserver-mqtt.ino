@@ -30,8 +30,8 @@ String MYNAME     =    "markus";           //>>>>>>>>> CHANGE HERE
 //### YOUR LOCATION 
 // find ur LAT LON  use https://www.latlong.net/ and ur cityname like Brantford,canada  for Branford =43.139410,-80.263650
 
-#define LATITUDE 43.6711581             //>>>>>>>>> CHANGE HERE
-#define LONGITUDE -79.4129989           //>>>>>>>>> CHANGE HERE
+float  LATITUDE  =   43.6711581    ;         //>>>>>>>>> CHANGE HERE
+float  LONGITUDE =  -79.4129989    ;       //>>>>>>>>> CHANGE HERE
 
 
 #define DHTPIN 4 // what digital pin we're connected to NodeMCU (D2)
