@@ -263,8 +263,8 @@ void loop() {
 
             // NTP 
             //timeClient.getFormattedTime();
-            
-            client.println("<div class=\"temperature\">"+timeClient.getFormattedTime() +"/div><br>");
+            //###EXCERISE
+           // client.println("<div class=\"temperature\">"+timeClient.getFormattedTime() +"/div><br>");
             
             client.println("<p>prevTemp     = " + (String)prevTemp + "</p>");
             if (prevTemp == t)
