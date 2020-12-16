@@ -110,9 +110,9 @@
     dht.begin();
     delay(500);
     // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-    float h = dht.readHumidity();
+    h = dht.readHumidity();
     // Read temperature as Celsius (the default)
-    float t = dht.readTemperature();
+    t = dht.readTemperature();
     Serial.print("readHumidity = ");
     Serial.println(h);
   
@@ -155,11 +155,11 @@
         if (client.available()) {             // if there's bytes to read from the client,
   
   
-          prevTemp = t;
+        
           // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-          float h = dht.readHumidity();
+          h = dht.readHumidity();
           // Read temperature as Celsius (the default)
-          float t = dht.readTemperature();
+          t = dht.readTemperature();
           Serial.print("readHumidity    = ");
           Serial.println(h);
           //Serial.print(" ");
@@ -211,11 +211,11 @@
               ptr += "h1 {margin: 50px auto 30px;}\n";
               ptr += ".side-by-side{display: inline-block;vertical-align: middle;position: relative;}\n";
               ptr += ".humidity-icon{background-color: #3498db;width: 30px;height: 30px;border-radius: 50%;line-height: 36px;}\n";
-              ptr += ".humidity-text{font-weight: 600;padding-left: 30px;font-size: 30px;width: 100px;text-align: left;}\n";
-              ptr += ".humidity{font-weight: 300;font-size: 60px;color: #3498db;}\n";
+              ptr += ".humidity-text{font-weight: 600;padding-left: 30px;font-size: 30px;width: 200px;text-align: left;}\n";
+              ptr += ".humidity{font-weight: 300;font-size: 30px;color: #3498db;}\n";
               ptr += ".temperature-icon{background-color: #f39c12;width: 30px;height: 30px;border-radius: 50%;line-height: 40px;}\n";
-              ptr += ".temperature-text{font-weight: 600;padding-left: 30px;font-size: 30px;width: 100px;text-align: left;}\n";
-              ptr += ".temperature{font-weight: 300;font-size: 60px;color: #f39c12;}\n";
+              ptr += ".temperature-text{font-weight: 600;padding-left: 30px;font-size: 30px;width: 200px;text-align: left;}\n";
+              ptr += ".temperature{font-weight: 300;font-size: 30px;color: #f39c12;}\n";
               ptr += ".superscript{font-size: 17px;font-weight: 600;position: absolute;right: -20px;top: 15px;}\n";
               ptr += ".data{padding: 10px;}\n";
               ptr += ".button { background-color: #195B6A; border: none; color: white; padding: 16px 40px;\n";
@@ -241,12 +241,13 @@
   
               //   client.println("<p>Temperature  = "+(String)t+"</p>");
               // client.println("<p>Humidity     = "+(String)h+"</p>");
+              client.println("<p>prevTemp     = "+(String)prevTemp+"</p>");
                if (prevTemp == t)
                   client.println("<div class=\"temperature\">NO Temperature Change</div><br>");
               else
-                client.println("<div class=\"temperature\">Temperature Changed</div><br>");
+                client.println("<div class=\"temperature\">Temperature Changed from "+(String)prevTemp+"</div><br>");
                 
-  
+              prevTemp = t;
               client.println("<div class=\"side-by-side temperature-text\">Temperature</div><div class=\"side-by-side temperature\">" + (String)t + " C</div><br>");
               client.println("<div class=\"side-by-side humidity-text\">Humidity</div><div class=\"side-by-side humidity\">" + (String)h + " %</div>\n");
                //###>>EXERISE - display the volatge 
