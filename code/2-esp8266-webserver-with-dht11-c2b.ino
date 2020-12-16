@@ -24,8 +24,8 @@ ADC_MODE(ADC_VCC); //vcc read
   ////>>>>>>>>> CHANGE HERE
 */
 // Replace with YOUR network credentials
-const char* ssid     = "vanishinglake";    //>>>>>>>>> CHANGE HERE
-const char* password = "2Fast4You";        //>>>>>>>>> CHANGE HERE
+const char* ssid     = "CHANGE HERE";    //>>>>>>>>> CHANGE HERE
+const char* password = "CHANGE HERE";        //>>>>>>>>> CHANGE HERE
 String DEVICEID   =    "mvk01";            //>>>>>>>>> CHANGE HERE
 #define mqtt_server    "52.117.240.201"    //>>>>>>>>> CHANGE HERE - should preset for P-Tech
 
