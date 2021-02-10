@@ -5,7 +5,7 @@
 //
 // This programs will start a websever which is connected to you wifi once you adjust the SSID and password please change all parameters - see CHANGE HERE
 //  
-// 
+//  Chapter 2 - Code #1
 //
 
 // based on https://randomnerdtutorials.com/esp8266-web-server/
@@ -61,7 +61,9 @@ unsigned long currentTime1 = millis();
 unsigned long previousTime1 = millis(); 
 
 const long mqttSchedule = 10000; // send mqtt message every 10sec
-
+float myvol=0;
+  float prevTemp = 0;
+  
 unsigned long currentTime = millis();
 // Previous time
 unsigned long previousTime = 0; 
@@ -101,7 +103,9 @@ void setup() {
   delay(500);
   dht.begin();
   delay(500);
-
+    //  Batt = ESP.getVcc();
+    Serial.print("Read internal Voltage = ");
+    Serial.println( ESP.getVcc());
     
 }
 
@@ -150,13 +154,13 @@ void loop(){
             
             // turns the GPIOs on and off
             if (header.indexOf("GET /led/on") >= 0) {
-              Serial.println("LED 5 on");
+              Serial.println("LED on");
               LEDState = "on";
-              digitalWrite(LED, HIGH);
+              digitalWrite(LED, LOW);
             } else if (header.indexOf("GET /led/off") >= 0) {
               Serial.println("LED off");
               LEDState = "off";
-              digitalWrite(LED, LOW);
+              digitalWrite(LED, HIGH);
             } 
             
             // Display the HTML web page
@@ -184,7 +188,7 @@ void loop(){
   client.println(ptr);
   
             // Web Page Heading
-            client.println("<body><h1>ESP8266 Web Server</h1>");
+            client.println("<body><h1>ESP8266 Web Server - YOURNAME</h1>");
             
             // Display current state, and ON/OFF buttons for GPIO 16 
             client.println("<p>GPIO16 LED - State " + LEDState + "</p>");
@@ -195,12 +199,22 @@ void loop(){
               client.println("<p><a href=\"/led/off\"><button class=\"button button2\">OFF</button></a></p>");
             } 
 
-            client.println("<p>Temperature = "+(String)t+"</p>");
-            client.println("<p>Humidity = "+(String)h+"</p>");
-
+//###>>EXERISE display a message if temerature changes
+              // eg. if prevTemp == t  than No  Temperature Change
+  
+              //   client.println("<p>Temperature  = "+(String)t+"</p>");
+              // client.println("<p>Humidity     = "+(String)h+"</p>");
+              client.println("<p>prevTemp     = "+(String)prevTemp+"</p>");
+              // if (prevTemp == t)
+               
+        prevTemp = t;
             client.println("<div class=\"side-by-side temperature-text\">Temperature</div><div class=\"side-by-side temperature\">"+(String)t+" C</div><br>");
             client.println("<div class=\"side-by-side humidity-text\">Humidity</div><div class=\"side-by-side humidity\">"+(String)h+" %</div>\n");
-
+               //###>>EXERISE - display the volatge 
+  myvol = ESP.getVcc();
+  myvol =myvol /1000;
+               
+          
             client.println("<p><a href=\"/refresh\"><button class=\"button button2\">Refresh</button></a></p>");
             client.println("</body></html>");
             
