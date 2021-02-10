@@ -18,6 +18,7 @@ void setup() {
   Serial.println(VERSION);
   dht.begin();
 }
+
 float t=0;
 float pt=0;
 void loop() {
@@ -37,13 +38,24 @@ void loop() {
     Serial.println(F("Failed to read from DHT sensor!"));
     return; //restart
   }
-   //Serial.println("readTemperature in C = "+String(t));
-   //Serial.println("readHumidity in % = "+String(h));
 
+  
+   Serial.println("readTemperature in C = "+String(t));
+   Serial.println("readHumidity in % = "+String(h));
+
+
+    /// for the plotter
+   //Serial.print("readTemperature:"+String(t));
+   //Serial.println(" readHumidity:"+String(h));
+   
+   //https://arduinogetstarted.com/tutorials/arduino-serial-plotter
+   //https://forum.arduino.cc/index.php?topic=637947.0
    // exerise #1 - display temperature in the plotter 
-    Serial.println(t);
+    //Serial.println(t);
 
-   // exerise #2 ... print temerature only if previouse temperature has changes
+
+
+   // exerise #2 ... print temperature only if previous temperature has changes
    //
    //
   // if(pt != t ) // Check if temperature changed
