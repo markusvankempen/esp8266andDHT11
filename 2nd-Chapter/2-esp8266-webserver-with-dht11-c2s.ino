@@ -1,11 +1,11 @@
 //
-// Simple WebServer 
+// Simple WebServer
 //
 // mvk@ca.ibm.com - for SNP/ P-Tech
 //
 // This programs will start a websever which is connected to you wifi once you adjust the SSID and password please change all parameters - see CHANGE HERE
-//  
-//  Solution
+//
+//  Chapter 2 - Code #2 - Solution
 //
 
 // based on https://randomnerdtutorials.com/esp8266-web-server/
@@ -19,17 +19,17 @@
 #include <PubSubClient.h>
 ADC_MODE(ADC_VCC);
 /*
-////>>>>>>>>> CHANGE HERE
+  ////>>>>>>>>> CHANGE HERE
 */
-// Replace with YOUR network credentials  
+// Replace with YOUR network credentials
 // 2.4 GigHz wifi only
-const char* ssid     = "YOURS";    //>>>>>>>>> CHANGE HERE
-const char* password = "YOURS";        //>>>>>>>>> CHANGE HERE
+const char* ssid     = "1Aoffice";    //>>>>>>>>> CHANGE HERE
+const char* password = "2Fast4You";        //>>>>>>>>> CHANGE HERE
 String DEVICEID   =    "mvk01";            //>>>>>>>>> CHANGE HERE
 String MYNAME     =    "markus";           //>>>>>>>>> CHANGE HERE
 #define mqtt_server    "52.117."    //>>>>>>>>> CHANGE HERE - should preset for P-Tech
- 
-//### YOUR LOCATION 
+
+//### YOUR LOCATION
 // find ur LAT LON  use https://www.latlong.net/ and ur cityname like Brantford,canada  for Branford =43.139410,-80.263650
 
 float  LATITUDE  =   43.6711581    ;         //>>>>>>>>> CHANGE HERE
@@ -43,7 +43,7 @@ float  LONGITUDE =  -79.4129989    ;       //>>>>>>>>> CHANGE HERE
 DHT dht(DHTPIN, DHTTYPE);
 
 String mqttmsg = "{\"hello\":\"hello\"}";
-  
+
 // Set web server port number to 80
 WiFiServer server(80);
 
@@ -59,15 +59,15 @@ const int LED = 16;
 // Current time
 unsigned long currentTime1 = millis();
 // Previous time
-unsigned long previousTime1 = millis(); 
+unsigned long previousTime1 = millis();
 
 const long mqttSchedule = 10000; // send mqtt message every 10sec
-float myvol=0;
-  float prevTemp = 0;
-  
+float myvol = 0;
+float prevTemp = 0;
+
 unsigned long currentTime = millis();
 // Previous time
-unsigned long previousTime = 0; 
+unsigned long previousTime = 0;
 // Define timeout time in milliseconds (example: 2000ms = 2s)
 const long timeoutTime = 2000;
 
@@ -76,7 +76,7 @@ PubSubClient mqttclient(espClient);
 
 
 //
-// Setup 
+// Setup
 //
 void setup() {
   Serial.begin(115200);
@@ -104,21 +104,35 @@ void setup() {
   delay(500);
   dht.begin();
   delay(500);
-    //  Batt = ESP.getVcc();
-    Serial.print("Read internal Voltage = ");
-    Serial.println( ESP.getVcc());
-    
+  //  Batt = ESP.getVcc();
+  Serial.print("Read internal Voltage = ");
+  Serial.println( ESP.getVcc());
+  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+  float h = dht.readHumidity();
+  // Read temperature as Celsius (the default)
+  float t = dht.readTemperature();
+
+  // Check if any reads failed and exit early (to try again).
+  if (isnan(h) || isnan(t) ) {
+    Serial.println("Failed to read from DHT sensor!");
+    //return;
+  }
+
+  Serial.print("Temperature = ");
+  Serial.println(t);
+  Serial.print("Humidity = ");
+  Serial.println(h);
 }
 
 
 //
-// loop 
+// loop
 //
-void loop(){
-    WiFiClient client = server.available();   // Listen for incoming clients
-    currentTime1 = millis();
-    //previousTime1 = currentTime1;
-  
+void loop() {
+  WiFiClient client = server.available();   // Listen for incoming clients
+  currentTime1 = millis();
+  //previousTime1 = currentTime1;
+
 
   if (client) {                             // If a new client connects,
     Serial.println("New Client.");          // print a message out in the serial port
@@ -126,19 +140,19 @@ void loop(){
     currentTime = millis();
     previousTime = currentTime;
     while (client.connected() && currentTime - previousTime <= timeoutTime) { // loop while the client's connected
-      currentTime = millis();         
+      currentTime = millis();
       if (client.available()) {             // if there's bytes to read from the client,
-      // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+        // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
         float h = dht.readHumidity();
-      // Read temperature as Celsius (the default)
-      float t = dht.readTemperature();
- 
-      // Check if any reads failed and exit early (to try again).
-      if (isnan(h) || isnan(t) ) {
-      Serial.println("Failed to read from DHT sensor!");
-      //return;
-      }
-        
+        // Read temperature as Celsius (the default)
+        float t = dht.readTemperature();
+
+        // Check if any reads failed and exit early (to try again).
+        if (isnan(h) || isnan(t) ) {
+          Serial.println("Failed to read from DHT sensor!");
+          //return;
+        }
+
         char c = client.read();             // read a byte, then
         //Serial.write(c);                    // print it out the serial monitor
         header += c;
@@ -152,7 +166,7 @@ void loop(){
             client.println("Content-type:text/html");
             client.println("Connection: close");
             client.println();
-            
+
             // turns the GPIOs on and off
             if (header.indexOf("GET /led/on") >= 0) {
               Serial.println("LED on");
@@ -162,67 +176,67 @@ void loop(){
               Serial.println("LED off");
               LEDState = "off";
               digitalWrite(LED, HIGH);
-            } 
-            
+            }
+
             // Display the HTML web page
             client.println("<!DOCTYPE html><html>");
             client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
             client.println("<link rel=\"icon\" href=\"data:,\">");
-    
-            String  ptr ="";
-            ptr +="<style>html { font-family: 'Open Sans', sans-serif; display: block; margin: 0px auto; text-align: center;color: #333333;}\n";
-  ptr +="body{margin-top: 50px;}\n";
-  ptr +="h1 {margin: 50px auto 30px;}\n";
-  ptr +=".side-by-side{display: inline-block;vertical-align: middle;position: relative;}\n";
-  ptr +=".humidity-icon{background-color: #3498db;width: 30px;height: 30px;border-radius: 50%;line-height: 36px;}\n";
-  ptr +=".humidity-text{font-weight: 600;padding-left: 15px;font-size: 19px;width: 160px;text-align: left;}\n";
-  ptr +=".humidity{font-weight: 300;font-size: 60px;color: #3498db;}\n";
-  ptr +=".temperature-icon{background-color: #f39c12;width: 30px;height: 30px;border-radius: 50%;line-height: 40px;}\n";
-  ptr +=".temperature-text{font-weight: 600;padding-left: 15px;font-size: 19px;width: 160px;text-align: left;}\n";
-  ptr +=".temperature{font-weight: 300;font-size: 60px;color: #f39c12;}\n";
-  ptr +=".superscript{font-size: 17px;font-weight: 600;position: absolute;right: -20px;top: 15px;}\n";
-  ptr +=".data{padding: 10px;}\n";
-  ptr +=".button { background-color: #195B6A; border: none; color: white; padding: 16px 40px;\n";
-  ptr +="text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}\n";
-  ptr +=".button2 {background-color: #77878A;}\n";
-  ptr +="</style></head>\n";
-  client.println(ptr);
-  
+
+            String  ptr = "";
+            ptr += "<style>html { font-family: 'Open Sans', sans-serif; display: block; margin: 0px auto; text-align: center;color: #333333;}\n";
+            ptr += "body{margin-top: 50px;}\n";
+            ptr += "h1 {margin: 50px auto 30px;}\n";
+            ptr += ".side-by-side{display: inline-block;vertical-align: middle;position: relative;}\n";
+            ptr += ".humidity-icon{background-color: #3498db;width: 30px;height: 30px;border-radius: 50%;line-height: 36px;}\n";
+            ptr += ".humidity-text{font-weight: 600;padding-left: 15px;font-size: 19px;width: 160px;text-align: left;}\n";
+            ptr += ".humidity{font-weight: 300;font-size: 60px;color: #3498db;}\n";
+            ptr += ".temperature-icon{background-color: #f39c12;width: 30px;height: 30px;border-radius: 50%;line-height: 40px;}\n";
+            ptr += ".temperature-text{font-weight: 600;padding-left: 15px;font-size: 19px;width: 160px;text-align: left;}\n";
+            ptr += ".temperature{font-weight: 300;font-size: 60px;color: #f39c12;}\n";
+            ptr += ".superscript{font-size: 17px;font-weight: 600;position: absolute;right: -20px;top: 15px;}\n";
+            ptr += ".data{padding: 10px;}\n";
+            ptr += ".button { background-color: #195B6A; border: none; color: white; padding: 16px 40px;\n";
+            ptr += "text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}\n";
+            ptr += ".button2 {background-color: #77878A;}\n";
+            ptr += "</style></head>\n";
+            client.println(ptr);
+
             // Web Page Heading
             client.println("<body><h1>ESP8266 Web Server - YOURNAME</h1>");
-            
-            // Display current state, and ON/OFF buttons for GPIO 16 
+
+            // Display current state, and ON/OFF buttons for GPIO 16
             client.println("<p>GPIO16 LED - State " + LEDState + "</p>");
-            // If the output5State is off, it displays the ON button       
-            if (LEDState=="off") {
+            // If the output5State is off, it displays the ON button
+            if (LEDState == "off") {
               client.println("<p><a href=\"/led/on\"><button class=\"button\">ON</button></a></p>");
             } else {
               client.println("<p><a href=\"/led/off\"><button class=\"button button2\">OFF</button></a></p>");
-            } 
+            }
 
-//###>>EXERISE display a message if temerature changes
-              // eg. if prevTemp == t  than No  Temperature Change
-  
-              //   client.println("<p>Temperature  = "+(String)t+"</p>");
-              // client.println("<p>Humidity     = "+(String)h+"</p>");
-              client.println("<p>prevTemp     = "+(String)prevTemp+"</p>");
-               if (prevTemp == t)
-                  client.println("<div class=\"temperature\">NO Temperature Change</div><br>");
-              else
-                client.println("<div class=\"temperature\">Temperature Changed from "+(String)prevTemp+"</div><br>");
+            //###>>EXERISE display a message if temerature changes
+            // eg. if prevTemp == t  than No  Temperature Change
 
-        prevTemp = t;
-            client.println("<div class=\"side-by-side temperature-text\">Temperature</div><div class=\"side-by-side temperature\">"+(String)t+" C</div><br>");
-            client.println("<div class=\"side-by-side humidity-text\">Humidity</div><div class=\"side-by-side humidity\">"+(String)h+" %</div>\n");
-               //###>>EXERISE - display the volatge 
-  myvol = ESP.getVcc();
-  myvol =myvol /1024;
-               
-           client.println("<br><div class=\"side-by-side humidity-text\">Voltage</div><div class=\"side-by-side humidity\">" + String(myvol) + " V</div>\n");
-  
+            //   client.println("<p>Temperature  = "+(String)t+"</p>");
+            // client.println("<p>Humidity     = "+(String)h+"</p>");
+            client.println("<p>prevTemp     = " + (String)prevTemp + "</p>");
+            if (prevTemp == t)
+              client.println("<div class=\"temperature\">NO Temperature Change</div><br>");
+            else
+              client.println("<div class=\"temperature\">Temperature Changed from " + (String)prevTemp + "</div><br>");
+
+            prevTemp = t;
+            client.println("<div class=\"side-by-side temperature-text\">Temperature</div><div class=\"side-by-side temperature\">" + (String)t + " C</div><br>");
+            client.println("<div class=\"side-by-side humidity-text\">Humidity</div><div class=\"side-by-side humidity\">" + (String)h + " %</div>\n");
+            //###>>EXERISE - display the volatge
+            myvol = ESP.getVcc();
+            myvol = myvol / 1024;
+
+            client.println("<br><div class=\"side-by-side humidity-text\">Voltage</div><div class=\"side-by-side humidity\">" + String(myvol) + " V</div>\n");
+
             client.println("<p><a href=\"/refresh\"><button class=\"button button2\">Refresh</button></a></p>");
             client.println("</body></html>");
-            
+
             // The HTTP response ends with another blank line
             client.println();
             // Break out of the while loop
@@ -238,7 +252,7 @@ void loop(){
     // Clear the header variable
     header = "";
     // Close the connection
-    client.stop();    
+    client.stop();
     Serial.println("Client disconnected.");
     Serial.println("");
   }
