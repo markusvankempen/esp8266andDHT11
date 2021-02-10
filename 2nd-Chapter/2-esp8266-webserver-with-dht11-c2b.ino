@@ -17,6 +17,7 @@
 #include <ESP8266WiFi.h>
 #include "DHT.h"
 #include <PubSubClient.h>
+ADC_MODE(ADC_VCC);
 /*
 ////>>>>>>>>> CHANGE HERE
 */
@@ -204,7 +205,7 @@ void loop(){
   
               //   client.println("<p>Temperature  = "+(String)t+"</p>");
               // client.println("<p>Humidity     = "+(String)h+"</p>");
-              client.println("<p>prevTemp     = "+(String)prevTemp+"</p>");
+            //  client.println("<p>prevTemp     = "+(String)prevTemp+"</p>");
               // if (prevTemp == t)
                
         prevTemp = t;
@@ -212,9 +213,9 @@ void loop(){
             client.println("<div class=\"side-by-side humidity-text\">Humidity</div><div class=\"side-by-side humidity\">"+(String)h+" %</div>\n");
                //###>>EXERISE - display the volatge 
   myvol = ESP.getVcc();
-  myvol =myvol /1000;
+  myvol =myvol /1024;
                
-          
+          // client.println("<p>myvol     = "+(String)myvol+"</p>");
             client.println("<p><a href=\"/refresh\"><button class=\"button button2\">Refresh</button></a></p>");
             client.println("</body></html>");
             
