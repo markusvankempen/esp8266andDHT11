@@ -1,17 +1,17 @@
 //
-// Simple WebServer with mqtt messaging
+// Simple WebServer 
 //
 // mvk@ca.ibm.com - for SNP/ P-Tech
 //
 // This programs will start a websever which is connected to you wifi once you adjust the SSID and password please change all parameters - see CHANGE HERE
-// the code will also send a mqtt message a mqtt broker .... 
+//  
 // 
 //
 
 // based on https://randomnerdtutorials.com/esp8266-web-server/
 // switch on /off LED ... LED GPIO16 or GPIO03
 
-#define VERSION "141220202-1323"
+#define VERSION "20210210-1323"
 
 // Load Wi-Fi library
 #include <ESP8266WiFi.h>
@@ -21,8 +21,9 @@
 ////>>>>>>>>> CHANGE HERE
 */
 // Replace with YOUR network credentials  
-const char* ssid     = "YOURSSID";    //>>>>>>>>> CHANGE HERE
-const char* password = "YOURWIFIPASSWORD";        //>>>>>>>>> CHANGE HERE
+// 2.4 GigHz wifi only
+const char* ssid     = "1Aoffice";    //>>>>>>>>> CHANGE HERE
+const char* password = "2Fast4You";        //>>>>>>>>> CHANGE HERE
 String DEVICEID   =    "mvk01";            //>>>>>>>>> CHANGE HERE
 String MYNAME     =    "markus";           //>>>>>>>>> CHANGE HERE
 #define mqtt_server    "52.117.240.201"    //>>>>>>>>> CHANGE HERE - should preset for P-Tech
@@ -101,62 +102,9 @@ void setup() {
   dht.begin();
   delay(500);
 
-  mqttclient.setServer(mqtt_server, 1883);
     
 }
-String macToStr(const uint8_t* mac)
-{
-  String result;
-  for (int i = 0; i < 6; ++i) {
-    result += String(mac[i], 16);
-    if (i < 5)
-      result += ':';
-  }
-  return result;
-}
 
-//
-// Create MQTT connection 
-//
-void reconnect() {
-  // Loop until we're reconnected
-  Serial.println("MQTT connected = ");
-   Serial.println(mqttclient.connected());
-  while (!mqttclient.connected()) {
-        Serial.print("Attempting MQTT connection...");
-    
-          // Generate client name based on MAC address and last 8 bits of microsecond counter
-      String clientName;  
-      clientName += "esp8266-";
-      uint8_t mac[6];
-      WiFi.macAddress(mac);
-      clientName += macToStr(mac);
-      clientName += "-";
-      clientName += String(micros() & 0xff, 16);
-      Serial.print("Connecting to ");
-      Serial.print(mqtt_server);
-      Serial.print(" as ");
-      Serial.println(clientName);
-
-
-    // Attempt to connect
-    // If you do not want to use a username and password, change next line to
-  if (mqttclient.connect((char*) clientName.c_str())) {
-    //if (client.connect((char*) clientName.c_str()), mqtt_user, mqtt_password)) {
-      Serial.println("connected");
-         Serial.println("Sending hello message");
-         mqttmsg = "{\"hello\":\"hello\"}"; 
-          mqttclient.publish("hello", mqttmsg.c_str(), true);
-          
-    } else {
-      Serial.print("failed, rc=");
-      Serial.print(mqttclient.state());
-      Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
-      delay(5000);
-    }
-  }
-}
 
 //
 // loop 
@@ -165,30 +113,7 @@ void loop(){
     WiFiClient client = server.available();   // Listen for incoming clients
     currentTime1 = millis();
     //previousTime1 = currentTime1;
-    
-  if((currentTime1 - previousTime1) > mqttSchedule ) // send all 5sec
-  {
-
-        float h = dht.readHumidity();
-      // Read temperature as Celsius (the default)
-      float t = dht.readTemperature();
-
-      // Excerise ... only send message if temperature or Humidity is changing
   
-      if (!mqttclient.connected()) {
-        reconnect();
-      }else{
-            /// SEND MQTT message
-            mqttmsg = "{  \"location\" : \"Toronto\" , \"name\" : \""+MYNAME+"\", \"deviceid\" : \""+ DEVICEID+"\", \"humidity\" : " +String(h)+" ,   \"temperature\" : "+String(t)+" ,\"latitude\" :"+LATITUDE+",\"logitude\" : "+LONGITUDE+"}";
-
-            
-           Serial.println("Sending Sensor Data");
-           Serial.println(mqttmsg.c_str()); 
-           mqttclient.publish("sensor", mqttmsg.c_str(), true);
-        }
-          previousTime1 = millis(); 
-        
-    }
 
   if (client) {                             // If a new client connects,
     Serial.println("New Client.");          // print a message out in the serial port
