@@ -17,6 +17,7 @@
 #include <ESP8266WiFi.h>
 #include "DHT.h"
 #include <PubSubClient.h>
+ADC_MODE(ADC_VCC);
 /*
 ////>>>>>>>>> CHANGE HERE
 */
