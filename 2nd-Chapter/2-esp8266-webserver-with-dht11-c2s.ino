@@ -215,7 +215,7 @@ void loop(){
             client.println("<div class=\"side-by-side humidity-text\">Humidity</div><div class=\"side-by-side humidity\">"+(String)h+" %</div>\n");
                //###>>EXERISE - display the volatge 
   myvol = ESP.getVcc();
-  myvol =myvol /1000;
+  myvol =myvol /1024;
                
            client.println("<br><div class=\"side-by-side humidity-text\">Voltage</div><div class=\"side-by-side humidity\">" + String(myvol) + " V</div>\n");
   
