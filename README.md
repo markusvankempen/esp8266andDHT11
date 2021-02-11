@@ -8,5 +8,9 @@ https://github.com/markusvankempen/esp8266andDHT11/blob/main/SNP-2020-ESP8266-DH
 ##### Code https://github.com/markusvankempen/esp8266andDHT11/blob/main/1st-Chapter/1-esp8266-dht11-c1a.ino
 
 ### Chapter 2 - ESP8266 as a WebServer
+##### Video https://youtu.be/9XS9oIDVBms
+##### Code https://github.com/markusvankempen/esp8266andDHT11/blob/main/2nd-Chapter/2-esp8266-webserver-with-dht11-c2b.ino
+
+
 
 
