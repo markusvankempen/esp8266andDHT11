@@ -23,8 +23,8 @@ ADC_MODE(ADC_VCC);
 */
 // Replace with YOUR network credentials  
 // 2.4 GigHz wifi only
-const char* ssid     = "YOURSSID";    //>>>>>>>>> CHANGE HERE
-const char* password = "YORUPASSOWRD";        //>>>>>>>>> CHANGE HERE
+const char* ssid     = "1Aoffice";    //>>>>>>>>> CHANGE HERE
+const char* password = "2Fast4You";        //>>>>>>>>> CHANGE HERE
 String DEVICEID   =    "mvk01";            //>>>>>>>>> CHANGE HERE
 String MYNAME     =    "markus";           //>>>>>>>>> CHANGE HERE
 #define mqtt_server    "52.117.240.201"    //>>>>>>>>> CHANGE HERE - should preset for P-Tech
@@ -107,7 +107,21 @@ void setup() {
     //  Batt = ESP.getVcc();
     Serial.print("Read internal Voltage = ");
     Serial.println( ESP.getVcc());
-    
+      float h = dht.readHumidity();
+  // Read temperature as Celsius (the default)
+  float t = dht.readTemperature();
+
+  // Check if any reads failed and exit early (to try again).
+  if (isnan(h) || isnan(t) ) {
+    Serial.println("Failed to read from DHT sensor!");
+    //return;
+  }
+
+  Serial.print("Temperature = ");
+  Serial.println(t);
+  Serial.print("Humidity = ");
+  Serial.println(h);
+}
 }
 
 
