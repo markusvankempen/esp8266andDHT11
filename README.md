@@ -4,7 +4,6 @@ Connecting esp8266 and DHT11 via MQTT (and more)
 https://github.com/markusvankempen/esp8266andDHT11/blob/main/SNP-2020-ESP8266-DHT11-EnviromentMonitoring-v4.pdf
 
 ### Chapter 1 - Arduino IDE setup and ESP & DHT11 Wiring
-#### Video
-https://youtu.be/xmXT2o1DjKc
+#### Video https://youtu.be/xmXT2o1DjKc
 
 
