@@ -5,13 +5,13 @@
 //
 // This programs will start a websever which is connected to you wifi once you adjust the SSID and password please change all parameters - see CHANGE HERE
 //
-// Date:161220202-1323"
+// Date:20210211-1323"
 //
 
 // based on https://randomnerdtutorials.com/esp8266-web-server/
 // switch on /off LED ... LED GPIO16 or GPIO03
 
-#define VERSION "161220202-1323"
+#define VERSION "20210211-1323"
 
 // Load Wi-Fi library
 #include <ESP8266WiFi.h>
@@ -21,25 +21,25 @@
 ADC_MODE(ADC_VCC); //vcc read
 
 /********************* NTP **************************************/
+//download form here https://randomnerdtutorials.com/esp32-ntp-client-date-time-arduino-ide/
 #include <NTPClient.h>
 // change next line to use with another board/shield
 #include <ESP8266WiFi.h>
-//#include <WiFi.h> // for WiFi shield
-//#include <WiFi101.h> // for WiFi 101 shield or MKR1000
 #include <WiFiUdp.h>
+#include <Time.h>
 
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "pool.ntp.org", -18000, 60000);
+NTPClient timeClient(ntpUDP, "pool.ntp.org", -18000, 60000); //with EST adjustment
 
 /********************* NTP END **************************************/
 /*
   ////>>>>>>>>> CHANGE HERE
 */
 // Replace with YOUR network credentials
-const char* ssid     = "";    //>>>>>>>>> CHANGE HERE
-const char* password = "";        //>>>>>>>>> CHANGE HERE
-String DEVICEID   =    "mvk01";            //>>>>>>>>> CHANGE HERE
-#define mqtt_server    "52.117.240.201"    //>>>>>>>>> CHANGE HERE - should preset for P-Tech
+const char* ssid     = "YOURS";    //>>>>>>>>> CHANGE HERE
+const char* password = "YOURS";        //>>>>>>>>> CHANGE HERE
+String DEVICEID   =    "mvk01";          //>>>>>>>>> CHANGE HERE
+#define mqtt_server    "52.117..."              //>>>>>>>>> CHANGE HERE - should preset for P-Tech
 
 //### YOUR LOCATION
 // find ur LAT LON  use https://www.latlong.net/ and ur cityname like Brantford,canada  for Branford =43.139410,-80.263650
@@ -79,7 +79,7 @@ unsigned long currentTime = millis();
 // Previous time
 unsigned long previousTime = 0;
 // Define timeout time in milliseconds (example: 2000ms = 2s)
-const long timeoutTime = 2000;
+const long timeoutTime = 250;
 
 WiFiClient espClient;
 
@@ -137,12 +137,22 @@ void setup() {
   Serial.println("Start WebServer");
 
   //NTP
+  // infos  https://randomnerdtutorials.com/esp32-ntp-client-date-time-arduino-ide/
   timeClient.begin();
+  delay(500);
   timeClient.update();
-  Serial.println("NTP Server Time = ");
-  Serial.print(timeClient.getFormattedTime());
-  
+  Serial.print("NTP Server Time = ");
+  Serial.println(timeClient.getFormattedTime());
+  Serial.print("NTP Server Date = ");
+  //Serial.println(timeClient.getFormattedDate());
+  //Serial.print("Timestamp aka epoche = ");
+  Serial.println(timeClient.getEpochTime());
+  Serial.println("");
+
+
 }
+
+
 String macToStr(const uint8_t* mac)
 {
   String result;
@@ -179,12 +189,6 @@ void loop() {
         h = dht.readHumidity();
         // Read temperature as Celsius (the default)
         t = dht.readTemperature();
-        Serial.print("readHumidity    = ");
-        Serial.println(h);
-        //Serial.print(" ");
-        Serial.print("readTemperature = ");
-        Serial.println(t);
-
 
         // Check if any reads failed and exit early (to try again).
         if (isnan(h) || isnan(t) ) {
@@ -210,13 +214,13 @@ void loop() {
 
             // turns the GPIOs on and off
             if (header.indexOf("GET /led/on") >= 0) {
-              Serial.println("LED 5 on");
+              Serial.println("LED on");
               LEDState = "on";
-              digitalWrite(LED, HIGH);
+              digitalWrite(LED, LOW);
             } else if (header.indexOf("GET /led/off") >= 0) {
               Serial.println("LED off");
               LEDState = "off";
-              digitalWrite(LED, LOW);
+              digitalWrite(LED, HIGH);
             }
 
             // Display the HTML web page
@@ -255,17 +259,14 @@ void loop() {
               client.println("<p><a href=\"/led/off\"><button class=\"button button2\">OFF</button></a></p>");
             }
 
-            //###>>EXERISE display a message if temerature changes
-            // eg. if prevTemp == t  than No  Temperature Change
-
-            //   client.println("<p>Temperature  = "+(String)t+"</p>");
-            // client.println("<p>Humidity     = "+(String)h+"</p>");
-
+            
             // NTP 
             //timeClient.getFormattedTime();
-            //###EXCERISE
-           // client.println("<div class=\"temperature\">"+timeClient.getFormattedTime() +"/div><br>");
-            
+         //  ###EXCERISE PRINT TIME and DATE
+          // client.println("<div class=\"temperature\">"+timeClient.getFormattedTime() +"</div><br>");
+   //DATE ?
+
+           
             client.println("<p>prevTemp     = " + (String)prevTemp + "</p>");
             if (prevTemp == t)
               client.println("<div class=\"temperature\">NO Temperature Change</div><br>");
@@ -277,7 +278,7 @@ void loop() {
             client.println("<div class=\"side-by-side humidity-text\">Humidity</div><div class=\"side-by-side humidity\">" + (String)h + " %</div>\n");
             //###>>EXERISE - display the volatge
             myvol = ESP.getVcc();
-            myvol = myvol / 1000;
+            myvol = myvol / 1024;
 
             client.println("<br><div class=\"side-by-side humidity-text\">Voltage</div><div class=\"side-by-side humidity\">" + String(myvol) + " V</div>\n");
 
