@@ -22,8 +22,8 @@ ADC_MODE(ADC_VCC);
 */
 // Replace with YOUR network credentials
 // 2.4 GigHz wifi only
-const char* ssid     = "1Aoffice";    //>>>>>>>>> CHANGE HERE
-const char* password = "2Fast4You!";        //>>>>>>>>> CHANGE HERE
+const char* ssid     = "CHANGE HERE";    //>>>>>>>>> CHANGE HERE
+const char* password = "CHANGE HERE!";        //>>>>>>>>> CHANGE HERE
 String DEVICEID   =    "mvk01";            //>>>>>>>>> CHANGE HERE
 String MYNAME     =    "markus";           //>>>>>>>>> CHANGE HERE
 #define mqtt_server    "52.117."    //>>>>>>>>> CHANGE HERE - should preset for P-Tech
@@ -71,8 +71,6 @@ unsigned long previousTime = 0;
 const long timeoutTime = 2000;
 
 WiFiClient espClient;
-
-
 //
 // Setup
 //
