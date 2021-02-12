@@ -11,6 +11,9 @@ https://github.com/markusvankempen/esp8266andDHT11/blob/main/SNP-2020-ESP8266-DH
 ##### Video https://youtu.be/9XS9oIDVBms
 ##### Code https://github.com/markusvankempen/esp8266andDHT11/blob/main/2nd-Chapter/2-esp8266-webserver-with-dht11-c2b.ino
 
+### Chapter 3 - ESP8266 as a WebServer with NTP Server - Real Time Connection
+##### Video https://youtu.be/hIO6EtQ-3Ck
+##### Code https://raw.githubusercontent.com/markusvankempen/esp8266andDHT11/main/3rd%20Chapter/3-WifiWebServerWithDHT11AndNTP.ino
 
 
 
