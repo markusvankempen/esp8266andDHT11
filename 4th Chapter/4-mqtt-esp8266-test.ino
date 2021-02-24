@@ -18,22 +18,26 @@
   - Select your ESP8266 in "Tools -> Board"
 */
 
+// mvk@ca.ibm.com - update  your deviceid / topic ... see <<< CHANGE HERE
+// VERSION: 20210224
+
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
 // Update these with values suitable for your network.
 
-const char* ssid = "YOURS";
-const char* password = "YOURS";
+const char* ssid = "1Aoffice";
+const char* password = "2Fast4You!";
 const char* mqtt_server = "52.117.240.201";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 unsigned long lastMsg = 0;
-#define MSG_BUFFER_SIZE	(50)
+#define MSG_BUFFER_SIZE  (50)
 char msg[MSG_BUFFER_SIZE];
 int value = 0;
 
+// TODO counter to retries
 void setup_wifi() {
 
   delay(10);
@@ -89,9 +93,9 @@ void reconnect() {
     if (client.connect(clientId.c_str())) {
       Serial.println("connected");
       // Once connected, publish an announcement...
-      client.publish("outTopic", "hello world from Markus"); ///<<< CHANGE HERE
+      client.publish("sensor/YOURNAME", "hello world from Markus"); ///<<< CHANGE HERE
       // ... and resubscribe
-      client.subscribe("inTopic");
+      client.subscribe("sensor/YOURNAME/command");///<<< CHANGE HERE
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -121,9 +125,9 @@ void loop() {
   if (now - lastMsg > 2000) {
     lastMsg = now;
     ++value;
-    snprintf (msg, MSG_BUFFER_SIZE, "hello world #%ld", value);
+    snprintf (msg, MSG_BUFFER_SIZE, "hello world #%ld", value);///<<< CHANGE HERE
     Serial.print("Publish message: ");
     Serial.println(msg);
-    client.publish("outTopic", msg);
+    client.publish("sensor/YOURNAME", msg);///<<< CHANGE HERE
   }
 }
