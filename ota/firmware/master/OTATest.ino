@@ -89,12 +89,15 @@ void FirmwareUpdate()
     String line = client.readStringUntil('\n');
     if (line == "\r") {
       Serial.println("Headers received");
+      Serial.println(line);
       break;
     }
   }
   String payload = client.readStringUntil('\n');
 
   payload.trim();
+  Serial.println("GitHub Version:"+payload);
+    Serial.println("Current Version:"+FirmwareVer);
   if(payload.equals(FirmwareVer) )
   {   
      Serial.println("Device already on latest firmware version"); 
